@@ -1,0 +1,86 @@
+:root {
+  --light_cyan: #d6fff6;
+  --darker_cyan: #d0efe6;
+  --russian_violet: #231651;
+  --med_turquoise: #4dccbd;
+  --spanish_blue: #2374ab;
+  --light_coral: #ff8484;
+}
+
+html {
+  font-family: sans-serif;
+  background: var(--russian_violet);
+  padding: 1rem;
+}
+
+body {
+  max-width: 960px;
+  margin: 0 auto;
+  color: var(--russian_violet);
+  background: var(--light_cyan);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: serif;
+  color: var(--med_turquoise);
+  margin: 1rem 0;
+}
+
+a {
+  color: var(--spanish_blue);
+}
+
+hr {
+  border: none;
+  border-top: 1px solid lightgray;
+}
+
+nav {
+  background: var(--light_coral);
+  color: var(--russian_violet);
+  display: flex;
+  align-items: center;
+  padding: 0 0.5rem;
+}
+
+nav h1 {
+  flex: auto;
+  color: var(--russian_violet);
+  margin: 0;
+}
+
+nav ul  {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+nav ul li a, nav ul li span, header .action {
+  display: block;
+  padding: 0.5rem;
+}
+
+.content {
+  padding: 0 1rem 1rem;
+}
+
+.recipe_entry > * {
+    margin: 0;
+}
+
+.recipe_entry {
+    padding: 0.25rem 0.75rem;
+    border-radius: 10px;
+}
+
+.recipe_entry a {
+  color: var(--med_turquoise);
+  text-decoration: none;
+}
+
+.recipe_entry:hover {
+    background: var(--darker_cyan);
+}
+
+

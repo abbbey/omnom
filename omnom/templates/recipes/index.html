@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Recipes{% endblock %}</h1>
+  {% if g.user %}
+    <a class="action" href="{{ url_for('blog.create') }}">New</a>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  {% for recipe in recipes %}
+    <div class="recipe_entry">
+      <h2><a href="{{ url_for('recipes.full_recipe', recipe_id=recipe.id) }}">{{ recipe.name }}</a></h2>
+      <p class="recipe_short_desc">{{ recipe.description }}</p>
+    </div>
+  {% endfor %}
+{% endblock %}
