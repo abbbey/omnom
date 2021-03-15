@@ -14,7 +14,7 @@
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """ This file contains the recipe db connections """
 import logging
-import os
+from pathlib import Path
 import sqlite3
 
 logger = logging.getLogger(__name__)
@@ -44,15 +44,14 @@ class RecipeEntry():
 class RecipeDB():
     """ Interface to the database for storing recipes """
 
-    DATABASE_FILENAME = 'recipe.db'
-    SCHEMA_FILENAME = 'schema.sql'
+    SCHEMA_FILENAME = Path(__file__).parent / 'schema.sql'
     NONE_FOOD_TYPE = 'None'
 
-    def __init__(self, db_directory, init_db=False):
-        """ Create a PurchaseDB in the given directory """
-        self.conn = sqlite3.connect(os.path.join(db_directory, self.DATABASE_FILENAME))
+    def __init__(self, db_filename, init_db=False):
+        """ Connect to sqlite db located at db_filename """
+        self.conn = sqlite3.connect(db_filename)
         self.conn.row_factory = sqlite3.Row
-        logging.debug('Connected to %s', self.DATABASE_FILENAME)
+        logging.debug('Connected to %s', db_filename)
         if init_db:
             self.init_db()
 
@@ -82,11 +81,10 @@ class RecipeDB():
 
     def init_db(self):
         """ Reset and initialize database from empty """
-        omnom_dir = os.path.abspath(os.path.dirname(__file__))
-        with open(os.path.join(omnom_dir, self.SCHEMA_FILENAME)) as fptr:
+        with open(self.SCHEMA_FILENAME) as fptr:
             cursor = self.conn.cursor()
             cursor.executescript(fptr.read())
-        logging.info('Initialized %s using %s', self.DATABASE_FILENAME, self.SCHEMA_FILENAME)
+        logging.info('Initialized recipe db using %s', self.SCHEMA_FILENAME)
 
     def add_type(self, food_type):
         """ Add a food type to the database. """
@@ -124,6 +122,15 @@ class RecipeDB():
         self._db_insert('INSERT INTO recipe (name, description, type_id) VALUES (?,?,?)',
                         (recipe.name, recipe.description, recipe.type_id))
         return
+
+    def get_recipe(self, recipe_id):
+        """ Get recipe given recipe_id# """
+        cursor = self._db_query('SELECT * from recipe WHERE id=?', (recipe_id,))
+        ret = cursor.fetchone()
+        if ret is None:
+            return None
+        else:
+            return RecipeEntry.from_db_row(ret)
 
     def get_all_recipes(self):
         """ Get all recipes from the db """
