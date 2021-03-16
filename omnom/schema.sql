@@ -1,5 +1,6 @@
-DROP TABLE IF EXISTS recipe;
 DROP TABLE IF EXISTS food_type;
+DROP TABLE IF EXISTS recipe;
+DROP TABLE IF EXISTS user;
 
 PRAGMA foreign_keys=ON;
 
@@ -16,4 +17,10 @@ CREATE TABLE recipe (
     type_id INTEGER,
     photo TEXT,
     FOREIGN KEY (type_id) REFERENCES food_type (id)
+);
+
+CREATE TABLE user (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL UNIQUE,
+    password TEXT NOT NULL
 );
