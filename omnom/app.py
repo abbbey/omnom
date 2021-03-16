@@ -19,6 +19,7 @@ from flask import Flask, current_app, g
 from flask.cli import with_appcontext
 from omnom.recipe_db import RecipeDB, RecipeEntry
 from omnom.recipe_view import bp as recipe_bp
+from omnom.user_db import UserDB
 from omnom.auth_view import bp as auth_bp
 from werkzeug.security import generate_password_hash
 
@@ -63,8 +64,6 @@ def init_db_command(extra_sql=None):
     """ Clear the existing data and create new tables."""
     rdb = RecipeDB(current_app.config['DATABASE'])
     rdb.init_db()
-    add_user_sql = 'INSERT INTO user (username, password) VALUES (?, ?)'
-    args = (username, generate_password_hash(password))
     if True:
         # FIXME: this preloads some recipes into the db - should remove at later stage of dev
         rdb.add_type('Pasta')
@@ -75,6 +74,8 @@ def init_db_command(extra_sql=None):
         rdb.add_recipe(RecipeEntry(None, 'Blueberry Muffins', 'A breakfast food', 1))
         rdb.add_recipe(RecipeEntry(None, 'Caesar Salad', 'Eat all kings', 3))
         rdb.add_recipe(RecipeEntry(None, 'Fried Rice', 'A great way to use up leftovers', 2))
+    udb = UserDB(current_app.config['DATABASE'])
+    udb.add_user('admin', generate_password_hash('admin'))
     click.echo('Initialized the database.')
 
 
