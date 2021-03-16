@@ -14,7 +14,7 @@
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """ Recipe views such as index and full recipe page """
 from flask import Blueprint, g, render_template
-from omnom.common import get_db
+from omnom.common import get_recipe_db
 
 
 bp = Blueprint('recipes', __name__)
@@ -23,7 +23,7 @@ bp = Blueprint('recipes', __name__)
 @bp.route('/')
 def index():
     """ Index page showing list of recipes """
-    db = get_db()
+    db = get_recipe_db()
     recipes = db.get_all_recipes()
     return render_template('recipes/index.html', recipes=recipes)
 
@@ -31,6 +31,6 @@ def index():
 @bp.route('/recipes/<int:recipe_id>')
 def full_recipe(recipe_id):
     """ Page showing full recipe info """
-    db = get_db()
+    db = get_recipe_db()
     recipe = db.get_recipe(recipe_id)
     return render_template('recipes/full_recipe.html', recipe=recipe)

@@ -15,11 +15,19 @@
 """ This file contains helpful common functions """
 from flask import g, current_app
 from omnom.recipe_db import RecipeDB
+from omnom.user_db import UserDB
 
 
-def get_db():
+def get_recipe_db():
     """ Get reference to RecipeDB """
     db = getattr(g, '_database', None)
     if not db:
         db = g._database = RecipeDB(current_app.config['DATABASE'])
+    return db
+
+def get_user_db():
+    """ Get a reference to UserDB """
+    db = getattr(g, '_userdb', None)
+    if not db:
+        db = g._userdb = UserDB(current_app.config['DATABASE'])
     return db

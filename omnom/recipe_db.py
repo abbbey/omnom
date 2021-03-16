@@ -14,8 +14,7 @@
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """ This file contains the recipe db connections """
 import logging
-from pathlib import Path
-import sqlite3
+from omnom.db import OmnomDB
 
 logger = logging.getLogger(__name__)
 
@@ -41,50 +40,14 @@ class RecipeEntry():
         return new_recipe
 
 
-class RecipeDB():
+class RecipeDB(OmnomDB):
     """ Interface to the database for storing recipes """
 
-    SCHEMA_FILENAME = Path(__file__).parent / 'schema.sql'
     NONE_FOOD_TYPE = 'None'
 
     def __init__(self, db_filename, init_db=False):
         """ Connect to sqlite db located at db_filename """
-        self.conn = sqlite3.connect(db_filename)
-        self.conn.row_factory = sqlite3.Row
-        logging.debug('Connected to %s', db_filename)
-        if init_db:
-            self.init_db()
-
-    def __del__(self):
-        self.close()
-
-    def close(self):
-        """ Close connection to db """
-        if self.conn:
-            self.conn.close()
-            self.conn = None
-
-    def _db_query(self, sql, args=None):
-        """ Execute a SQL query. Returns a cursor with results. """
-        cursor = self.conn.cursor()
-        if args:
-            cursor.execute(sql, args)
-        else:
-            cursor.execute(sql)
-        return cursor
-
-    def _db_insert(self, sql, args):
-        """ Execute SQL insert statement and commit. """
-        cursor = self.conn.cursor()
-        cursor.execute(sql, args)
-        self.conn.commit()
-
-    def init_db(self):
-        """ Reset and initialize database from empty """
-        with open(self.SCHEMA_FILENAME) as fptr:
-            cursor = self.conn.cursor()
-            cursor.executescript(fptr.read())
-        logging.info('Initialized recipe db using %s', self.SCHEMA_FILENAME)
+        super().__init__(db_filename=db_filename, init_db=init_db)
 
     def add_type(self, food_type):
         """ Add a food type to the database. """
