@@ -72,3 +72,4 @@ class OmnomDB():
         cursor = self.conn.cursor()
         cursor.execute(sql, args)
         self.conn.commit()
+        return cursor.lastrowid

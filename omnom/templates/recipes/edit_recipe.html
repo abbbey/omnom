@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Edit Recipe{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  <form method="post">
+    <label for="name">Name</label>
+    <input name="name" id="name" value="{{ recipe.name }}" required>
+    <label for="description">Body</label>
+    <textarea name="description" id="description">{{ recipe.description }}</textarea>
+    <label for="food_type">Category</label>
+    <select id="food_type" name="food_type">
+      {% for id, food_type in food_types.items() %}
+        <option value="{{ id }}">{{ food_type }}</option>
+      {% endfor %}
+    </select>
+    <input type="submit" value="Save">
+  </form>
+{% endblock %}
+

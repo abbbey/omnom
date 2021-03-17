@@ -45,8 +45,12 @@ nav {
 
 nav h1 {
   flex: auto;
-  color: var(--russian_violet);
   margin: 0;
+}
+
+nav h1 a {
+  color: var(--russian_violet);
+  text-decoration: none;
 }
 
 nav ul  {
@@ -63,6 +67,30 @@ nav ul li a, nav ul li span, header .action {
 
 .content {
   padding: 0 1rem 1rem;
+}
+
+header {
+    display: flex;
+    margin-top: 0.5rem;
+}
+
+header * {
+  display: flex;
+  margin: 0;
+}
+
+header h1 {
+    flex-grow: 2;
+    margin: 0.5rem;
+}
+
+header ul {
+    padding-left: 5px;
+    list-style: none;
+}
+
+header ul li {
+    margin: 2px;
 }
 
 .recipe_entry > * {
@@ -82,5 +110,3 @@ nav ul li a, nav ul li span, header .action {
 .recipe_entry:hover {
     background: var(--darker_cyan);
 }
-
-

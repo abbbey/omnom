@@ -13,7 +13,8 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """ This file contains helpful common functions """
-from flask import g, current_app
+import functools
+from flask import g, current_app, redirect, url_for
 from omnom.recipe_db import RecipeDB
 from omnom.user_db import UserDB
 
@@ -25,9 +26,23 @@ def get_recipe_db():
         db = g._database = RecipeDB(current_app.config['DATABASE'])
     return db
 
+
 def get_user_db():
     """ Get a reference to UserDB """
     db = getattr(g, '_userdb', None)
     if not db:
         db = g._userdb = UserDB(current_app.config['DATABASE'])
     return db
+
+
+def login_required(view):
+    """ Wrap a view which requires login. Returns redirect to login page if
+    no user is active.
+    """
+    @functools.wraps(view)
+    def wrapped_view(**kwargs):
+        if g.user is None:
+            return redirect(url_for('auth.login'))
+        return view(**kwargs)
+
+    return wrapped_view

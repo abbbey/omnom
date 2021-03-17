@@ -75,16 +75,15 @@ class RecipeDB(OmnomDB):
         cursor = self._db_query('SELECT * from food_type')
         ret = cursor.fetchall()
         food_types = {}
-        for key,value in ret:
-            food_types[key] = value
+        for row in ret:
+            food_types[row['id']] = row['food_type']
         return food_types
 
     def add_recipe(self, recipe):
         """ Add a recipe to the database """
-        food_type_id = self.get_type_id(recipe.type_id)
-        self._db_insert('INSERT INTO recipe (name, description, type_id) VALUES (?,?,?)',
-                        (recipe.name, recipe.description, recipe.type_id))
-        return
+        recipe_id = self._db_insert('INSERT INTO recipe (name, description, type_id) VALUES (?,?,?)',
+                                    (recipe.name, recipe.description, recipe.type_id))
+        return recipe_id
 
     def get_recipe(self, recipe_id):
         """ Get recipe given recipe_id# """
@@ -95,11 +94,18 @@ class RecipeDB(OmnomDB):
         else:
             return RecipeEntry.from_db_row(ret)
 
+    def update_recipe(self, recipe):
+        """ Update recipe in db """
+        self._db_insert('UPDATE recipe SET name=?, description=?, type_id=? WHERE id=?',
+                        (recipe.name, recipe.description, recipe.type_id, recipe.id))
+
+    def delete_recipe(self, recipe_id):
+        """ Delete recipe from database """
+        self.conn.execute('DELETE FROM recipe WHERE id = ?', (recipe_id,))
+        self.conn.commit()
+
     def get_all_recipes(self):
         """ Get all recipes from the db """
-        query = ('SELECT r.id, name, description, r.type_id, author_id, username'
-             ' FROM post p JOIN user u ON p.author_id = u.id'
-             ' WHERE p.id = ?')
         recipes = []
         cursor = self._db_query('SELECT * from recipe')
         for recipe_row in cursor.fetchall():
@@ -107,4 +113,3 @@ class RecipeDB(OmnomDB):
             recipe = RecipeEntry.from_db_row(recipe_row)
             recipes.append(recipe)
         return recipes
-

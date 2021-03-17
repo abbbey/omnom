@@ -17,11 +17,11 @@ import os
 import click
 from flask import Flask, current_app, g
 from flask.cli import with_appcontext
+from werkzeug.security import generate_password_hash
 from omnom.recipe_db import RecipeDB, RecipeEntry
 from omnom.recipe_view import bp as recipe_bp
 from omnom.user_db import UserDB
 from omnom.auth_view import bp as auth_bp
-from werkzeug.security import generate_password_hash
 
 
 def create_app(test_config=None):
@@ -60,7 +60,7 @@ def create_app(test_config=None):
 
 @click.command('init-db')
 @with_appcontext
-def init_db_command(extra_sql=None):
+def init_db_command():
     """ Clear the existing data and create new tables."""
     rdb = RecipeDB(current_app.config['DATABASE'])
     rdb.init_db()

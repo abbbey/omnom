@@ -92,17 +92,3 @@ def load_logged_in_user():
         g.user = None
     else:
         g.user = get_user_db().get_user(user_id)
-
-
-def login_required(view):
-    """ Wrap a view which requires login. Returns redirect to login page if
-    no user is active.
-    """
-    @functools.wraps(view)
-    def wrapped_view(**kwargs):
-        if g.user is None:
-            return redirect(url_for('auth.login'))
-        return view(**kwargs)
-
-    return wrapped_view
-    return render_template('auth/login.html')

@@ -3,7 +3,16 @@
 {% block header %}
   <h1>{% block title %}{{ recipe.name }}{% endblock %}</h1>
   {% if g.user %}
-    <a class="action" href=" url_for('blog.create') ">New</a>
+    <ul>
+      <li><form action="{{ url_for('recipes.edit', recipe_id=recipe.id) }}" method="get">
+          <input class="danger" type="submit" value="Edit">
+          </form></li>
+      <li><form action="{{ url_for('recipes.delete', recipe_id=recipe.id) }}" method="post">
+          <input class="danger" type="submit" value="Delete"
+              onclick="return confirm('Are you sure?');">
+          </form></li>
+  </form>
+    </ul>
   {% endif %}
 {% endblock %}
 

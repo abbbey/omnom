@@ -40,7 +40,7 @@ def app():
     os.unlink(db_path)
 
 
-class AuthActions(object):
+class AuthActions():
     def __init__(self, client):
         self._client = client
 

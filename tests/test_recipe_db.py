@@ -131,3 +131,35 @@ def test_get_missing_recipe(simple_db):
     rdb = simple_db
     ret = rdb.get_recipe(5000)
     assert ret is None
+
+
+def test_update_recipe(simple_db):
+    """ rdb.update_recipe updates entry for recipe """
+    rdb = simple_db
+    recipe = rdb.get_recipe(3)
+    orig_type = recipe.type_id
+    recipe.name = 'name_edit'
+    recipe.description = 'desc_edit'
+    recipe.type_id = orig_type + 1
+    rdb.update_recipe(recipe)
+    mod_recipe = rdb.get_recipe(3)
+    assert mod_recipe.name == 'name_edit'
+    assert mod_recipe.description == 'desc_edit'
+    assert mod_recipe.type_id == orig_type + 1
+
+
+def test_delete_recipe(simple_db):
+    """ rdb.delete_recipe deletes the correct recipe from database """
+    rdb = simple_db
+    all_recipes_before = rdb.get_all_recipes()
+    deleted_recipe = all_recipes_before[0]
+    rdb.delete_recipe(deleted_recipe.id)
+    all_recipes_after = rdb.get_all_recipes()
+    assert len(all_recipes_before) - 1 == len(all_recipes_after)
+    assert rdb.get_recipe(deleted_recipe.id) is None
+
+
+def test_delete_missing_recipe(simple_db):
+    """ rbd.delete_recipe for a nonexistent recipe is a noop """
+    rdb = simple_db
+    rdb.delete_recipe(5000)

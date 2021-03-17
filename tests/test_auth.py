@@ -18,14 +18,15 @@ from omnom.common import get_user_db
 
 
 def test_register(client, app):
-        assert client.get('/auth/register').status_code == 200
-        response = client.post('/auth/register',
-                               data={'username': 'a', 'password': 'a'})
-        assert 'http://localhost/auth/login' == response.headers['Location']
+    """ able to register a new user """
+    assert client.get('/auth/register').status_code == 200
+    response = client.post('/auth/register',
+                           data={'username': 'a', 'password': 'a'})
+    assert response.headers['Location'] == 'http://localhost/auth/login'
 
-        with app.app_context():
-            ret = get_user_db().get_user_by_name('a')
-            assert ret is not None
+    with app.app_context():
+        ret = get_user_db().get_user_by_name('a')
+        assert ret is not None
 
 
 @pytest.mark.parametrize(( 'username', 'password', 'message'),
@@ -34,12 +35,14 @@ def test_register(client, app):
                           ('test'    , 'test'    , b'already registered'),
                           ))
 def test_register_validate_input(client, username, password, message):
+    """ register form catches common input errors """
     response = client.post('/auth/register',
                            data={'username': username, 'password': password})
     assert message in response.data
 
 
 def test_login(client, auth):
+    """ login sets uer_id in session variable """
     assert client.get('/auth/login').status_code == 200
     response = auth.login()
     assert response.headers['Location'] == 'http://localhost/'
@@ -54,13 +57,13 @@ def test_login(client, auth):
                           ('test'    , 'a'       , b'Incorrect password.'),
                           ))
 def test_login_validate_input(auth, username, password, message):
+    """ login catches common input errors """
     response = auth.login(username, password)
-    data = response.data
-    print(data)
     assert message in response.data
 
 
-def test_logout(client, auth):
+def test_logout(auth):
+    """ user_id is removed from session after logout """
     auth.login()
     auth.logout()
     assert 'user_id' not in session
