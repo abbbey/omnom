@@ -16,6 +16,8 @@ CREATE TABLE recipe (
     description TEXT,
     type_id INTEGER,
     photo TEXT,
+    ingredients TEXT,
+    instructions TEXT,
     FOREIGN KEY (type_id) REFERENCES food_type (id)
 );
 

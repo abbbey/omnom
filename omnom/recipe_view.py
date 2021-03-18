@@ -48,7 +48,7 @@ def render_recipe_editor(recipe_id=None):
     """
     db = get_recipe_db()
     if recipe_id is None:
-        recipe = RecipeEntry(-1,'','', -1)
+        recipe = RecipeEntry(id=-1, name='', description='', type_id=-1)
     else:
         recipe = db.get_recipe(recipe_id)
     food_types = db.get_all_types()
@@ -58,7 +58,7 @@ def render_recipe_editor(recipe_id=None):
 def validate_and_post_changes(recipe_id=None):
     """ Post changes to recipe, returns recipe_id """
     db = get_recipe_db()
-    recipe = RecipeEntry(recipe_id=recipe_id,
+    recipe = RecipeEntry(id=recipe_id,
                          name=request.form['name'],
                          description=request.form['description'],
                          type_id=request.form['food_type'])

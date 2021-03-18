@@ -39,10 +39,12 @@ def no_recipe_db(empty_db):
 def simple_db(no_recipe_db):
     """ Simple db with a few recipes and food types """
     rdb = no_recipe_db
-    rdb.add_recipe(RecipeEntry(None, 'Mac Cheese', 'A tasty dish', 1))
-    rdb.add_recipe(RecipeEntry(None, 'Blueberry Muffins', 'A breakfast food', 1))
-    rdb.add_recipe(RecipeEntry(None, 'Caesar Salad', 'Eat all kings', 3))
-    rdb.add_recipe(RecipeEntry(None, 'Fried Rice', 'A great way to use up leftovers', 2))
+    rdb.add_recipe(RecipeEntry(name='Mac Cheese', description='A tasty dish', type_id=1))
+    rdb.add_recipe(RecipeEntry(name='Blueberry Muffins', description='A breakfast food',
+                               type_id=1))
+    rdb.add_recipe(RecipeEntry(name='Caesar Salad', description='Eat all kings', type_id=3))
+    rdb.add_recipe(RecipeEntry(name='Fried Rice', description='A great way to use up leftovers',
+                               type_id=2))
     return rdb
 
 
@@ -91,7 +93,7 @@ def test_add_recipe(no_recipe_db):
     expected_name = 'Mac Cheese'
     expected_desc = 'A tasty dish'
     expected_type = 3
-    new_recipe = RecipeEntry(None, expected_name, expected_desc, expected_type)
+    new_recipe = RecipeEntry(name=expected_name, description=expected_desc, type_id=expected_type)
     rdb.add_recipe(new_recipe)
     all_recipes = rdb.get_all_recipes()
     assert len(all_recipes) == 1
@@ -104,9 +106,9 @@ def test_add_recipe(no_recipe_db):
 def test_add_multiple_recipes(no_recipe_db):
     """ Test that we can add (and retrieve) multiple recipes """
     rdb = no_recipe_db
-    expected_recipes = [ RecipeEntry(None, '0', 'foo', 3),
-                         RecipeEntry(None, '1', 'bar', 3),
-                         RecipeEntry(None, '2', 'bar', 3),
+    expected_recipes = [ RecipeEntry(name='0', description='foo', type_id=3),
+                         RecipeEntry(name='1', description='bar', type_id=3),
+                         RecipeEntry(name='2', description='bar', type_id=3),
                        ]
     for recipe in expected_recipes:
         rdb.add_recipe(recipe)

@@ -33,7 +33,7 @@ def test_index_logged_in(client, auth):
     page = str(response.data, encoding='utf-8')
     assert 'test' in page
     assert '>Log Out</a>' in page
-    assert '>New Recipe</a>' in page
+    assert 'New Recipe' in page
 
 
 def test_full_recipe(client):
@@ -51,8 +51,8 @@ def test_full_recipe_logged_in(client, auth):
     auth.login('test', 'test')
     response = client.get('/recipes/2')
     page = str(response.data, encoding='utf-8')
-    assert '>Edit</a>' in page
-    assert '>Delete</a>' in page
+    assert 'Edit' in page
+    assert 'Delete' in page
 
 
 def test_edit_recipe(client, auth):

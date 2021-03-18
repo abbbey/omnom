@@ -14,25 +14,25 @@
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """ This file contains the recipe db connections """
 import logging
+import attr
 from omnom.db import OmnomDB
 
 logger = logging.getLogger(__name__)
 
-
+@attr.s(kw_only=True)
 class RecipeEntry():
     """ A RecipeEntry, comprised of name, description, and type_id"""
 
-    def __init__(self, recipe_id, name, description, type_id):
-        self.id = recipe_id
-        self.name = name
-        self.description = description
-        self.type_id = type_id
-        self.photo = ''
+    id = attr.ib(default=None)
+    name = attr.ib()
+    description = attr.ib()
+    type_id = attr.ib(default=-1)
+    photo = attr.ib(default=None)
 
     @classmethod
     def from_db_row(cls, row):
         """ Create RecipeEntry from recipe db row. """
-        new_recipe = RecipeEntry(recipe_id=row['id'],
+        new_recipe = RecipeEntry(id=row['id'],
                                  name=row['name'],
                                  description=row['description'],
                                  type_id=row['type_id'])
