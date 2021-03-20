@@ -41,6 +41,8 @@ def simple_db(no_recipe_db):
     rdb = no_recipe_db
     rdb.add_recipe(RecipeEntry(name='Mac Cheese', description='A tasty dish', type_id=1))
     rdb.add_recipe(RecipeEntry(name='Blueberry Muffins', description='A breakfast food',
+                               ingredients=['Blueberries', 'Muffin'],
+                               instructions=['Mix berries and muffin together', 'Serve hot'],
                                type_id=1))
     rdb.add_recipe(RecipeEntry(name='Caesar Salad', description='Eat all kings', type_id=3))
     rdb.add_recipe(RecipeEntry(name='Fried Rice', description='A great way to use up leftovers',
@@ -126,6 +128,8 @@ def test_get_recipe(simple_db):
     ret = rdb.get_recipe(2)
     assert ret is not None
     assert ret.name == 'Blueberry Muffins'
+    assert 'Blueberries' in ret.ingredients
+    assert 'Serve hot' in ret.instructions
 
 
 def test_get_missing_recipe(simple_db):

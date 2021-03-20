@@ -13,31 +13,47 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """ This file contains the recipe db connections """
+import json
 import logging
 import attr
 from omnom.db import OmnomDB
 
 logger = logging.getLogger(__name__)
 
+
 @attr.s(kw_only=True)
 class RecipeEntry():
     """ A RecipeEntry, comprised of name, description, and type_id"""
+    # pylint: disable=too-few-public-methods
 
-    id = attr.ib(default=None)
+    id = attr.ib(default=None)  # pylint: disable=invalid-name
     name = attr.ib()
     description = attr.ib()
     type_id = attr.ib(default=-1)
     photo = attr.ib(default=None)
+    ingredients = attr.ib(factory=list)
+    instructions = attr.ib(factory=list)
 
     @classmethod
-    def from_db_row(cls, row):
+    def from_dict(cls, recipe_dict):
         """ Create RecipeEntry from recipe db row. """
-        new_recipe = RecipeEntry(id=row['id'],
-                                 name=row['name'],
-                                 description=row['description'],
-                                 type_id=row['type_id'])
-        new_recipe.photo = row['photo']
+        new_recipe = RecipeEntry(id=recipe_dict['id'],
+                                 name=recipe_dict['name'],
+                                 description=recipe_dict['description'],
+                                 type_id=recipe_dict['type_id'],
+                                 photo=recipe_dict['photo'])
+        if 'ingredients' in recipe_dict.keys():
+            new_recipe.ingredients = cls.deserialize(recipe_dict['ingredients'])
+        if 'instructions' in recipe_dict.keys():
+            new_recipe.instructions = cls.deserialize(recipe_dict['instructions'])
         return new_recipe
+
+    @staticmethod
+    def deserialize(input_str):
+        """ Deserialize json into list, catching None """
+        if input_str is None:
+            return list()
+        return json.loads(input_str)
 
 
 class RecipeDB(OmnomDB):
@@ -81,23 +97,29 @@ class RecipeDB(OmnomDB):
 
     def add_recipe(self, recipe):
         """ Add a recipe to the database """
-        recipe_id = self._db_insert('INSERT INTO recipe (name, description, type_id) VALUES (?,?,?)',
-                                    (recipe.name, recipe.description, recipe.type_id))
+        sql = ('INSERT INTO recipe (name, description, type_id, ingredients, instructions, photo) '
+               'VALUES (?,?,?,?,?,?)')
+        ingredients = json.dumps(recipe.ingredients)
+        instructions = json.dumps(recipe.instructions)
+        recipe_id = self._db_insert(sql, (recipe.name, recipe.description, recipe.type_id,
+                                          ingredients, instructions, recipe.photo))
         return recipe_id
 
     def get_recipe(self, recipe_id):
-        """ Get recipe given recipe_id# """
+        """ Get full recipe given recipe_id# """
         cursor = self._db_query('SELECT * from recipe WHERE id=?', (recipe_id,))
         ret = cursor.fetchone()
         if ret is None:
             return None
-        else:
-            return RecipeEntry.from_db_row(ret)
+        return RecipeEntry.from_dict(ret)
 
     def update_recipe(self, recipe):
         """ Update recipe in db """
-        self._db_insert('UPDATE recipe SET name=?, description=?, type_id=? WHERE id=?',
-                        (recipe.name, recipe.description, recipe.type_id, recipe.id))
+        sql = ('UPDATE recipe SET name=?, description=?, type_id=?, ingredients=?, '
+               'instructions=?, photo=? WHERE id=?')
+        self._db_insert(sql, (recipe.name, recipe.description, recipe.type_id,
+                              json.dumps(recipe.ingredients), json.dumps(recipe.instructions),
+                              recipe.photo, recipe.id))
 
     def delete_recipe(self, recipe_id):
         """ Delete recipe from database """
@@ -107,9 +129,8 @@ class RecipeDB(OmnomDB):
     def get_all_recipes(self):
         """ Get all recipes from the db """
         recipes = []
-        cursor = self._db_query('SELECT * from recipe')
+        cursor = self._db_query('SELECT id, name, description, type_id, photo from recipe')
         for recipe_row in cursor.fetchall():
-            print(tuple(recipe_row))
-            recipe = RecipeEntry.from_db_row(recipe_row)
+            recipe = RecipeEntry.from_dict(recipe_row)
             recipes.append(recipe)
         return recipes
