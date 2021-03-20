@@ -20,8 +20,21 @@
     <article class="full_recipe">
       <div>
         <p class="recipe_short_desc">{{ recipe.description }}</p>
-        <p class="recipe_ingred">recipe ingredients list</p>
-        <p class="recipe_steps">recipe step list</p>
+      </div>
+      <div class="recipe_ingred">
+          <ul>
+          {% for item in recipe.ingredients %}
+             <li>{{ item }}</li>
+          {% endfor %}
+          </ul>
+      </div>
+      <div class="recipe_steps">
+          <ol>
+          {% for item in recipe.instructions %}
+             <li>{{ item }}</li>
+          {% endfor %}
+          </ol>
+      </div>
       </div>
     </article>
 {% endblock %}
