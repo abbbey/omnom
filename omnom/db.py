@@ -59,7 +59,7 @@ class OmnomDB():
         cursor = self.conn.cursor()
         if args:
             if not isinstance(args, tuple):
-                raise Exception("args isn't a tuple. Forgot to put a comma, didn't you?")
+                raise TypeError("args isn't a tuple. Forgot to put a comma, didn't you?")
             cursor.execute(sql, args)
         else:
             cursor.execute(sql)
@@ -68,7 +68,7 @@ class OmnomDB():
     def _db_insert(self, sql, args):
         """ Execute SQL insert statement and commit. """
         if not isinstance(args, tuple):
-            raise Exception("args isn't a tuple. Forgot to put a comma, didn't you?")
+            raise TypeError("args isn't a tuple. Forgot to put a comma, didn't you?")
         cursor = self.conn.cursor()
         cursor.execute(sql, args)
         self.conn.commit()
