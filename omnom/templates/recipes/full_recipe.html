@@ -2,39 +2,33 @@
 
 {% block header %}
   <h1>{% block title %}{{ recipe.name }}{% endblock %}</h1>
+  <div class="edit-controls">
   {% if g.user %}
-    <ul>
-      <li><form action="{{ url_for('recipes.edit', recipe_id=recipe.id) }}" method="get">
-          <input class="danger" type="submit" value="Edit">
-          </form></li>
-      <li><form action="{{ url_for('recipes.delete', recipe_id=recipe.id) }}" method="post">
-          <input class="danger" type="submit" value="Delete"
-              onclick="return confirm('Are you sure?');">
-          </form></li>
-  </form>
-    </ul>
+    <form action="{{ url_for('recipes.edit', recipe_id=recipe.id) }}" method="get">
+      <input class="danger" type="submit" value="Edit">
+    </form>
+    <form action="{{ url_for('recipes.delete', recipe_id=recipe.id) }}" method="post">
+      <input class="danger" type="submit" value="Delete"
+       onclick="return confirm('This will permanently delete this recipe. Are you sure?');">
+    </form>
   {% endif %}
+  </div>
 {% endblock %}
 
 {% block content %}
-    <article class="full_recipe">
-      <div>
-        <p class="recipe_short_desc">{{ recipe.description }}</p>
-      </div>
-      <div class="recipe_ingred">
-          <ul>
-          {% for item in recipe.ingredients %}
-             <li>{{ item }}</li>
-          {% endfor %}
-          </ul>
-      </div>
-      <div class="recipe_steps">
-          <ol>
-          {% for item in recipe.instructions %}
-             <li>{{ item }}</li>
-          {% endfor %}
-          </ol>
-      </div>
+    <article class="full-recipe">
+      <section class="recipe-description">
+        <p>{{ recipe.description }}</p>
+      </section>
+      <div class="recipe-content">
+        <section class="recipe-ingredients">
+          <h3>Ingredients</h3>
+          {{ ingredients|safe }}
+        </section>
+        <section class="recipe-instructions">
+          <h3>Instructions</h3>
+          {{ instructions|safe }}
+        </section>
       </div>
     </article>
 {% endblock %}

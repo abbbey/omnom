@@ -5,18 +5,44 @@
 {% endblock %}
 
 {% block content %}
-  <form method="post">
-    <label for="name">Name</label>
-    <input name="name" id="name" value="{{ recipe.name }}" required>
-    <label for="description">Body</label>
-    <textarea name="description" id="description">{{ recipe.description }}</textarea>
-    <label for="food_type">Category</label>
-    <select id="food_type" name="food_type">
-      {% for id, food_type in food_types.items() %}
-        <option value="{{ id }}">{{ food_type }}</option>
-      {% endfor %}
-    </select>
-    <input type="submit" value="Save">
+  <form class="editor-form" method="post">
+
+    <!-- Metadata section -->
+    <div class="editor-item">
+      <label for="name">Name</label>
+      <input name="name" id="name" value="{{ recipe.name }}" required>
+    </div>
+    <div class="editor-item">
+      <label for="description">Description</label>
+      <textarea name="description" id="description" rows="2">{{ recipe.description }}</textarea>
+    </div>
+    <div class="editor-item">
+      <label for="food-type">Category</label>
+      <select name="food_type" id="food-type">
+        {% for id, food_type in food_types.items() %}
+          {% if id == recipe.type_id %}
+            <option value="{{ id }}" selected="selected">{{ food_type }}</option>
+          {% else %}
+            <option value="{{ id }}">{{ food_type }}</option>
+          {% endif %}
+        {% endfor %}
+      </select>
+    </div>
+
+    <!-- Ingredients section -->
+    <div class="editor-item">
+      <label for="ingredients">Ingredients</label>
+      <textarea name="ingredients" id="ingredients" rows="5">{{ recipe.ingredients }}</textarea>
+    </div>
+
+    <!-- Directions/Steps section -->
+    <div class="editor-item">
+      <label for="instructions">Instructions</label>
+      <textarea name="instructions" id="instructions" rows="10">{{ recipe.instructions }}</textarea>
+    </div>
+    <div class="editor-item submit-button">
+      <input type="submit" value="Save Recipe">
+    </div>
+
   </form>
 {% endblock %}
-

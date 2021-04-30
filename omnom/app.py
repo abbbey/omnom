@@ -72,8 +72,8 @@ def init_db_command():
         rdb.add_type('Baked Goods')
         rdb.add_recipe(RecipeEntry(name='Mac Cheese', description='A tasty dish', type_id=1))
         rdb.add_recipe(RecipeEntry(name='Blueberry Muffins', description='A breakfast food',
-                                   type_id=1, ingredients=['Blueberries', 'Muffins'],
-                                   instructions=['Mix blueberries and muffins', 'Serve hot']))
+                                   type_id=4, ingredients='* Blueberries\n* Muffins',
+                                   instructions='1. Mix blueberries and muffins\n1. Serve hot'))
         rdb.add_recipe(RecipeEntry(name='Caesar Salad', description='Eat all kings', type_id=3))
         rdb.add_recipe(RecipeEntry(name='Fried Rice', description='A great way to use up leftovers', type_id=2))
     udb = UserDB(current_app.config['DATABASE'])

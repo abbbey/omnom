@@ -2,22 +2,22 @@
 
 {% block header %}
   <h1>{% block title %}Recipes{% endblock %}</h1>
-  <ul>
+  <div class="edit-controls">
     {% if g.user %}
-      <li><form action="{{ url_for('recipes.create') }}" method="get">
-          <input type="submit" value="New Recipe">
-          </form></li>
+      <form action="{{ url_for('recipes.create') }}" method="get">
+        <input type="submit" value="New Recipe">
+      </form>
     {% else %}
-      <li style="visibility:hidden">space</li>
+      <p style="visibility:hidden">space</p>
     {% endif %}
-  </ul>
+  </div>
 {% endblock %}
 
 {% block content %}
   {% for recipe in recipes %}
-    <div class="recipe_entry">
+    <section class="recipe-entry">
       <h2><a href="{{ url_for('recipes.full_recipe', recipe_id=recipe.id) }}">{{ recipe.name }}</a></h2>
-      <p class="recipe_short_desc">{{ recipe.description }}</p>
-    </div>
+      <p class="recipe-description-short">{{ recipe.description }}</p>
+    </section>
   {% endfor %}
 {% endblock %}

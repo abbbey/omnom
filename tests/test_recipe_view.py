@@ -23,7 +23,7 @@ def test_index(client):
     page = str(response.data, encoding='utf-8')
     assert '>Register</a>' in page
     assert '>Log In</a>' in page
-    assert page.count('recipe_entry') == len(db.get_all_recipes())
+    assert page.count('recipe-entry') == len(db.get_all_recipes())
 
 
 def test_index_logged_in(client, auth):
@@ -62,10 +62,15 @@ def test_edit_recipe(client, auth):
     page = str(response.data, encoding='utf-8')
     assert 'input name="name"' in page
     assert 'textarea name="description"' in page
-    assert 'select id="food_type"' in page
+    assert 'select name="food_type"' in page
+    assert 'textarea name="ingredients"' in page
+    assert 'textarea name="instructions"' in page
     food_types = get_recipe_db().get_all_types()
     for id_number, food_type in food_types.items():
-        type_option = '<option value="{}">{}'.format(id_number, food_type)
+        if id_number == 2:
+            type_option = '<option value="{}" selected="selected">{}'.format(id_number, food_type)
+        else:
+            type_option = '<option value="{}">{}'.format(id_number, food_type)
         assert type_option in page
 
 def test_edit_recipe_not_logged_in(client):

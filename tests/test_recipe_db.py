@@ -41,8 +41,8 @@ def simple_db(no_recipe_db):
     rdb = no_recipe_db
     rdb.add_recipe(RecipeEntry(name='Mac Cheese', description='A tasty dish', type_id=1))
     rdb.add_recipe(RecipeEntry(name='Blueberry Muffins', description='A breakfast food',
-                               ingredients=['Blueberries', 'Muffin'],
-                               instructions=['Mix berries and muffin together', 'Serve hot'],
+                               ingredients='* Blueberries\n* Muffin',
+                               instructions='1. Mix berries and muffin together\n1. Serve hot',
                                type_id=1))
     rdb.add_recipe(RecipeEntry(name='Caesar Salad', description='Eat all kings', type_id=3))
     rdb.add_recipe(RecipeEntry(name='Fried Rice', description='A great way to use up leftovers',

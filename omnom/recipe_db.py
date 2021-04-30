@@ -31,8 +31,8 @@ class RecipeEntry():
     description = attr.ib()
     type_id = attr.ib(default=-1)
     photo = attr.ib(default=None)
-    ingredients = attr.ib(factory=list)
-    instructions = attr.ib(factory=list)
+    ingredients = attr.ib(default='')
+    instructions = attr.ib(default='')
 
     @classmethod
     def from_dict(cls, recipe_dict):
@@ -43,17 +43,10 @@ class RecipeEntry():
                                  type_id=recipe_dict['type_id'],
                                  photo=recipe_dict['photo'])
         if 'ingredients' in recipe_dict.keys():
-            new_recipe.ingredients = cls.deserialize(recipe_dict['ingredients'])
+            new_recipe.ingredients = recipe_dict['ingredients']
         if 'instructions' in recipe_dict.keys():
-            new_recipe.instructions = cls.deserialize(recipe_dict['instructions'])
+            new_recipe.instructions = recipe_dict['instructions']
         return new_recipe
-
-    @staticmethod
-    def deserialize(input_str):
-        """ Deserialize json into list, catching None """
-        if input_str is None:
-            return list()
-        return json.loads(input_str)
 
 
 class RecipeDB(OmnomDB):
@@ -99,10 +92,8 @@ class RecipeDB(OmnomDB):
         """ Add a recipe to the database """
         sql = ('INSERT INTO recipe (name, description, type_id, ingredients, instructions, photo) '
                'VALUES (?,?,?,?,?,?)')
-        ingredients = json.dumps(recipe.ingredients)
-        instructions = json.dumps(recipe.instructions)
         recipe_id = self._db_insert(sql, (recipe.name, recipe.description, recipe.type_id,
-                                          ingredients, instructions, recipe.photo))
+                                          recipe.ingredients, recipe.instructions, recipe.photo))
         return recipe_id
 
     def get_recipe(self, recipe_id):
@@ -118,7 +109,7 @@ class RecipeDB(OmnomDB):
         sql = ('UPDATE recipe SET name=?, description=?, type_id=?, ingredients=?, '
                'instructions=?, photo=? WHERE id=?')
         self._db_insert(sql, (recipe.name, recipe.description, recipe.type_id,
-                              json.dumps(recipe.ingredients), json.dumps(recipe.instructions),
+                              recipe.ingredients, recipe.instructions,
                               recipe.photo, recipe.id))
 
     def delete_recipe(self, recipe_id):
