@@ -13,7 +13,9 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """ This file contains the main app creator """
+import logging
 import os
+import pathlib
 import click
 from flask import Flask, current_app, g
 from flask.cli import with_appcontext
@@ -22,6 +24,10 @@ from omnom.recipe_db import RecipeDB, RecipeEntry
 from omnom.recipe_view import bp as recipe_bp
 from omnom.user_db import UserDB
 from omnom.auth_view import bp as auth_bp
+from omnom.images import bp as images_bp
+
+
+logger = logging.getLogger(__name__)  # pylint: disable=invalid-name
 
 
 def create_app(test_config=None):
@@ -29,7 +35,8 @@ def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(
             SECRET_KEY='dev',
-            DATABASE=os.path.join(app.instance_path, 'omnom.sqlite'),
+            DATABASE=pathlib.Path(app.instance_path, 'omnom.sqlite'),
+            ASSETS_DIR=pathlib.Path(app.instance_path, 'assets'),
             )
 
     if test_config is None:
@@ -39,10 +46,11 @@ def create_app(test_config=None):
         # load the test config if passed in
         app.config.from_mapping(test_config)
 
-    try:
-        os.makedirs(app.instance_path)
-    except OSError:
-        pass
+    logger.info('Loaded app config: %s', app.config)
+
+    for new_dir in [app.instance_path, app.config['ASSETS_DIR']]:
+        new_dir = pathlib.Path(new_dir)
+        new_dir.mkdir(parents=True, exist_ok=True)
 
     @app.teardown_appcontext
     def close_db(exception):
@@ -52,8 +60,10 @@ def create_app(test_config=None):
 
     app.register_blueprint(recipe_bp)
     app.register_blueprint(auth_bp)
+    app.register_blueprint(images_bp)
     app.add_url_rule('/', endpoint='index')
     app.cli.add_command(init_db_command)
+    logger.info('Created app')
 
     return app
 

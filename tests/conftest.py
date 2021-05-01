@@ -16,6 +16,7 @@
 
 import os
 from pathlib import Path
+import shutil
 import tempfile
 import pytest
 from omnom.db import OmnomDB
@@ -34,10 +35,16 @@ def app():
     app = create_app({'TESTING': True,
                       'DATABASE': db_path,
                       })
+
+    source_image = RESOURCES_DIR / 'test.png'
+    test_image = app.config['ASSETS_DIR'] / 'test.png'
+    shutil.copy(source_image, test_image)
+
     yield app
 
     os.close(db_fd)
     os.unlink(db_path)
+    test_image.unlink(missing_ok=True)
 
 
 class AuthActions():

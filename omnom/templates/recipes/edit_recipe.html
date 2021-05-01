@@ -5,16 +5,12 @@
 {% endblock %}
 
 {% block content %}
-  <form class="editor-form" method="post">
+  <form class="editor-form" enctype="multipart/form-data" method="post">
 
     <!-- Metadata section -->
     <div class="editor-item">
       <label for="name">Name</label>
       <input name="name" id="name" value="{{ recipe.name }}" required>
-    </div>
-    <div class="editor-item">
-      <label for="description">Description</label>
-      <textarea name="description" id="description" rows="2">{{ recipe.description }}</textarea>
     </div>
     <div class="editor-item">
       <label for="food-type">Category</label>
@@ -28,6 +24,10 @@
         {% endfor %}
       </select>
     </div>
+    <div class="editor-item">
+      <label for="description">Description</label>
+      <textarea name="description" id="description" rows="2">{{ recipe.description }}</textarea>
+    </div>
 
     <!-- Ingredients section -->
     <div class="editor-item">
@@ -40,6 +40,12 @@
       <label for="instructions">Instructions</label>
       <textarea name="instructions" id="instructions" rows="10">{{ recipe.instructions }}</textarea>
     </div>
+    <!-- Image section -->
+    <div class="editor-item">
+      <label for="recipe-img-file">Recipe Image</label>
+      <input name="recipe_img_file" type="file" id="recipe-img-file" accept="image/*">
+    </div>
+
     <div class="editor-item submit-button">
       <input type="submit" value="Save Recipe">
     </div>
